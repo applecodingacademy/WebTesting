@@ -8,20 +8,24 @@
 
 /* Begin PBXBuildFile section */
 		5A4C435E22575024008C690A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A4C435D22575024008C690A /* AppDelegate.swift */; };
-		5A4C436022575024008C690A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A4C435F22575024008C690A /* ViewController.swift */; };
 		5A4C436322575024008C690A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5A4C436122575024008C690A /* Main.storyboard */; };
 		5A4C436522575026008C690A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5A4C436422575026008C690A /* Assets.xcassets */; };
 		5A4C436822575026008C690A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5A4C436622575026008C690A /* LaunchScreen.storyboard */; };
+		5A4C4370225750A3008C690A /* ComicViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A4C436F225750A3008C690A /* ComicViewController.swift */; };
+		5A4C4372225751D3008C690A /* ComicViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A4C4371225751D3008C690A /* ComicViewCell.swift */; };
+		5A4C437422576078008C690A /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A4C437322576078008C690A /* Model.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		5A4C435A22575024008C690A /* WebTesting.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WebTesting.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5A4C435D22575024008C690A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		5A4C435F22575024008C690A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		5A4C436222575024008C690A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		5A4C436422575026008C690A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5A4C436722575026008C690A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5A4C436922575026008C690A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5A4C436F225750A3008C690A /* ComicViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComicViewController.swift; sourceTree = "<group>"; };
+		5A4C4371225751D3008C690A /* ComicViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComicViewCell.swift; sourceTree = "<group>"; };
+		5A4C437322576078008C690A /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,8 +59,10 @@
 			isa = PBXGroup;
 			children = (
 				5A4C435D22575024008C690A /* AppDelegate.swift */,
-				5A4C435F22575024008C690A /* ViewController.swift */,
 				5A4C436122575024008C690A /* Main.storyboard */,
+				5A4C4371225751D3008C690A /* ComicViewCell.swift */,
+				5A4C436F225750A3008C690A /* ComicViewController.swift */,
+				5A4C437322576078008C690A /* Model.swift */,
 				5A4C436422575026008C690A /* Assets.xcassets */,
 				5A4C436622575026008C690A /* LaunchScreen.storyboard */,
 				5A4C436922575026008C690A /* Info.plist */,
@@ -135,8 +141,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5A4C436022575024008C690A /* ViewController.swift in Sources */,
 				5A4C435E22575024008C690A /* AppDelegate.swift in Sources */,
+				5A4C4372225751D3008C690A /* ComicViewCell.swift in Sources */,
+				5A4C4370225750A3008C690A /* ComicViewController.swift in Sources */,
+				5A4C437422576078008C690A /* Model.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
