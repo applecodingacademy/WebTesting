@@ -70,6 +70,11 @@ struct MarvelRoot:Codable {
             }
             let path:URL
             let imageExtension:String
+            var fullPath:URL? {
+               var pathComponents = URLComponents(url: path, resolvingAgainstBaseURL: false)
+               pathComponents?.scheme = "https"
+               return pathComponents?.url?.appendingPathExtension(imageExtension)
+            }
          }
          let thumbnail:Thumbnail
       }
@@ -127,7 +132,7 @@ func conexionMarvel() {
                   newComic.issueNumber = Int16(dato.issueNumber)
                   newComic.comicDesc = dato.description
                   newComic.resourceURI = dato.resourceURI
-                  newComic.thumbnailURL = dato.thumbnail.path.appendingPathExtension(dato.thumbnail.imageExtension)
+                  newComic.thumbnailURL = dato.thumbnail.fullPath
                   let newFecha = dato.dates.filter { $0.type == "onsaleDate" }
                   if newFecha.count > 0, let fecha = newFecha.first?.date {
                      newComic.onSaleDate = DateFormatter.marvelDate.date(from: fecha)
@@ -151,11 +156,15 @@ func conexionMarvel() {
                      print("Error al recuperar el formato")
                   }
                }
-               saveContext()
+            }
+            if let etagData = cargaDatos.etag.data(using: .utf8) {
+               saveKeychain(key: "etag", data: etagData)
             }
          } catch {
             print("Error en la serialización \(error)")
          }
+         saveContext()
+         NotificationCenter.default.post(name: NSNotification.Name("OKCARGA"), object: nil)
       }
    }.resume()
 }
