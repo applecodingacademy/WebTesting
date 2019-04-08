@@ -14,6 +14,8 @@
 		5A4C4370225750A3008C690A /* ComicViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A4C436F225750A3008C690A /* ComicViewController.swift */; };
 		5A4C4372225751D3008C690A /* ComicViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A4C4371225751D3008C690A /* ComicViewCell.swift */; };
 		5A4C437422576078008C690A /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A4C437322576078008C690A /* Model.swift */; };
+		5AAD904C225B33EA005277B0 /* ComicModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5AAD904A225B33EA005277B0 /* ComicModel.xcdatamodeld */; };
+		5AAD904E225B3C48005277B0 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AAD904D225B3C48005277B0 /* Extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +28,8 @@
 		5A4C436F225750A3008C690A /* ComicViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComicViewController.swift; sourceTree = "<group>"; };
 		5A4C4371225751D3008C690A /* ComicViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComicViewCell.swift; sourceTree = "<group>"; };
 		5A4C437322576078008C690A /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		5AAD904B225B33EA005277B0 /* ComicModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ComicModel.xcdatamodel; sourceTree = "<group>"; };
+		5AAD904D225B3C48005277B0 /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +67,8 @@
 				5A4C4371225751D3008C690A /* ComicViewCell.swift */,
 				5A4C436F225750A3008C690A /* ComicViewController.swift */,
 				5A4C437322576078008C690A /* Model.swift */,
+				5AAD904D225B3C48005277B0 /* Extension.swift */,
+				5AAD904A225B33EA005277B0 /* ComicModel.xcdatamodeld */,
 				5A4C436422575026008C690A /* Assets.xcassets */,
 				5A4C436622575026008C690A /* LaunchScreen.storyboard */,
 				5A4C436922575026008C690A /* Info.plist */,
@@ -143,6 +149,8 @@
 			files = (
 				5A4C435E22575024008C690A /* AppDelegate.swift in Sources */,
 				5A4C4372225751D3008C690A /* ComicViewCell.swift in Sources */,
+				5AAD904C225B33EA005277B0 /* ComicModel.xcdatamodeld in Sources */,
+				5AAD904E225B3C48005277B0 /* Extension.swift in Sources */,
 				5A4C4370225750A3008C690A /* ComicViewController.swift in Sources */,
 				5A4C437422576078008C690A /* Model.swift in Sources */,
 			);
@@ -344,6 +352,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		5AAD904A225B33EA005277B0 /* ComicModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				5AAD904B225B33EA005277B0 /* ComicModel.xcdatamodel */,
+			);
+			currentVersion = 5AAD904B225B33EA005277B0 /* ComicModel.xcdatamodel */;
+			path = ComicModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 5A4C435222575024008C690A /* Project object */;
 }

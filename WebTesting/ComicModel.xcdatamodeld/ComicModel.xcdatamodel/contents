@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14490.98" systemVersion="18E226" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Comics" representedClassName="Comics" syncable="YES" codeGenerationType="class">
+        <attribute name="comicDesc" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="issueNumber" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="onSaleDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="price" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="resourceURI" optional="YES" attributeType="URI" syncable="YES"/>
+        <attribute name="thumbnailIMG" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
+        <attribute name="thumbnailURL" optional="YES" attributeType="URI" syncable="YES"/>
+        <attribute name="title" attributeType="String" syncable="YES"/>
+        <relationship name="format" optional="YES" maxCount="1" deletionRule="Deny" destinationEntity="Formats" inverseName="comics" inverseEntity="Formats" syncable="YES"/>
+    </entity>
+    <entity name="Formats" representedClassName="Formats" syncable="YES" codeGenerationType="class">
+        <attribute name="format" attributeType="String" syncable="YES"/>
+        <relationship name="comics" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Comics" inverseName="format" inverseEntity="Comics" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Comics" positionX="-63" positionY="-18" width="128" height="195"/>
+        <element name="Formats" positionX="-54" positionY="63" width="128" height="75"/>
+    </elements>
+</model>

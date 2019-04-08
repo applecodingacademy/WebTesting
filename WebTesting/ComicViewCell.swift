@@ -30,5 +30,4 @@ class ComicViewCell: UITableViewCell {
       titulo.text = nil
       descripcion.text = nil
    }
-
 }

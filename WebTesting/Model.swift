@@ -7,14 +7,36 @@
 //
 
 import Foundation
-import CommonCrypto
+import CoreData
 
 let publicKey = "ae4ff7f58cd44114fe2049f565e9c60c"
 let privateKey = "644b11844d29e62f98227d861c457ac0b7fd66be"
 
 let baseURL = URL(string: "https://gateway.marvel.com/v1/public")!
 
+var persistentContainer:NSPersistentContainer = {
+   let container = NSPersistentContainer(name: "ComicModel")
+   container.loadPersistentStores { storeDescription, error in
+      if let error = error as NSError? {
+         fatalError("Error al abrir la base de datos")
+      }
+   }
+   return container
+}()
+
+var ctx:NSManagedObjectContext {
+   return persistentContainer.viewContext
+}
+
 var datos:MarvelRoot?
+
+enum ComicFormat:String, Codable {
+   case Comic, Magazine, Hardcover, Digest
+   case tradepaperback = "Trade Paperback"
+   case graphicnovel = "Graphic Novel"
+   case digitalcomic = "Digital Comic"
+   case infinitecomic = "Infinite Comic"
+}
 
 struct MarvelRoot:Codable {
    let code:Int
@@ -24,34 +46,47 @@ struct MarvelRoot:Codable {
       let limit:Int
       let total:Int
       let count:Int
+      struct MarvelResults:Codable {
+         let id:Int
+         let title:String
+         let issueNumber:Int
+         let description:String?
+         let format:ComicFormat
+         let resourceURI:URL
+         struct ComicDate:Codable {
+            let type:String
+            let date:String
+         }
+         let dates:[ComicDate]
+         struct ComicPrice:Codable {
+            let type:String
+            let price:Double
+         }
+         let prices:[ComicPrice]
+         struct Thumbnail:Codable {
+            enum CodingKeys:String,CodingKey {
+               case path
+               case imageExtension = "extension"
+            }
+            let path:URL
+            let imageExtension:String
+         }
+         let thumbnail:Thumbnail
+      }
+      let results:[MarvelResults]
    }
    let data:MarvelData
-   struct MarvelResults:Codable {
-      let id:Int
-      let title:String
-      let issueNumber:Int
-      let description:String
-      let format:String
-      let resourceURI:URL
-      struct ComicDate:Codable {
-         let type:String
-         let date:Date
-      }
-      let dates:[ComicDate]
-      struct ComicPrice:Codable {
-         let type:String
-         let price:Double
-      }
-      let prices:[ComicPrice]
-      struct Thumbnail:Codable {
-         enum CodingKeys:String,CodingKey {
-            case path
-            case imageExtension = "extension"
+}
+
+func saveContext() {
+   DispatchQueue.main.async {
+      if ctx.hasChanges {
+         do {
+            try ctx.save()
+         } catch {
+            print("Error en la grabación")
          }
-         let path:URL
-         let imageExtension:String
       }
-      let thumbnail:Thumbnail
    }
 }
 
@@ -82,10 +117,42 @@ func conexionMarvel() {
       }
       if response.statusCode == 200 {
          let decoder = JSONDecoder()
-         decoder.dateDecodingStrategy = .formatted(DateFormatter.marvelDate)
          do {
-            datos = try decoder.decode(MarvelRoot.self, from: data)
-            print(datos ?? "No hay nada")
+            let cargaDatos = try decoder.decode(MarvelRoot.self, from: data)
+            cargaDatos.data.results.forEach { dato in
+               if !comicExists(id: dato.id) {
+                  let newComic = Comics(context: ctx)
+                  newComic.id = Int64(dato.id)
+                  newComic.title = dato.title
+                  newComic.issueNumber = Int16(dato.issueNumber)
+                  newComic.comicDesc = dato.description
+                  newComic.resourceURI = dato.resourceURI
+                  newComic.thumbnailURL = dato.thumbnail.path.appendingPathExtension(dato.thumbnail.imageExtension)
+                  let newFecha = dato.dates.filter { $0.type == "onsaleDate" }
+                  if newFecha.count > 0, let fecha = newFecha.first?.date {
+                     newComic.onSaleDate = DateFormatter.marvelDate.date(from: fecha)
+                  }
+                  let newPrice = dato.prices.filter { $0.type == "printPrice" }
+                  if newPrice.count > 0 {
+                     newComic.price = newPrice.first?.price ?? 0.0
+                  }
+                  let formatQuery:NSFetchRequest<Formats> = Formats.fetchRequest()
+                  formatQuery.predicate = NSPredicate(format: "format = %@", dato.format.rawValue)
+                  do {
+                     let formato = try ctx.fetch(formatQuery)
+                     if let valorFormato = formato.first {
+                        newComic.format = valorFormato
+                     } else {
+                        let newFormat = Formats(context: ctx)
+                        newFormat.format = dato.format.rawValue
+                        newComic.format = newFormat
+                     }
+                  } catch {
+                     print("Error al recuperar el formato")
+                  }
+               }
+               saveContext()
+            }
          } catch {
             print("Error en la serialización \(error)")
          }
@@ -93,31 +160,8 @@ func conexionMarvel() {
    }.resume()
 }
 
-extension String {
-   var MD5:String? {
-      guard let messageData = data(using: .utf8) else {
-         return nil
-      }
-      var dataMD5 = Data(count: Int(CC_MD5_DIGEST_LENGTH))
-      _ = dataMD5.withUnsafeMutableBytes { bytes in
-         messageData.withUnsafeBytes { messageBytes in
-            CC_MD5(messageBytes.baseAddress, CC_LONG(messageData.count), bytes.bindMemory(to: UInt8.self).baseAddress)
-         }
-      }
-      var MD5String = String()
-      for c in dataMD5 {
-         MD5String += String(format: "%02x", c)
-      }
-      return MD5String
-   }
-}
-
-extension DateFormatter {
-   static let marvelDate:DateFormatter = {
-      let formatter = DateFormatter()
-      formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
-      formatter.locale = Locale(identifier: "en_US_POSIX")
-      formatter.timeZone = TimeZone(secondsFromGMT: 0)
-      return formatter
-   }()
+func comicExists(id:Int) -> Bool {
+   let consulta:NSFetchRequest<Comics> = Comics.fetchRequest()
+   consulta.predicate = NSPredicate(format: "id = %@", NSNumber(value: id))
+   return ((try? ctx.count(for: consulta)) ?? 0) > 0 ? true : false
 }
