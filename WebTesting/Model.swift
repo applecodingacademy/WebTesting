@@ -116,6 +116,9 @@ func conexionMarvel() {
    var request = URLRequest(url: urlFinal)
    request.httpMethod = "GET"
    request.addValue("*/*", forHTTPHeaderField: "Accept")
+   if let etag = loadKeychain(key: "etag"), let ETag = String(data: etag, encoding: .utf8) {
+      request.addValue(ETag, forHTTPHeaderField: "ETag")
+   }
    session.dataTask(with: request) { data, response, error in
       guard let data = data, let response = response as? HTTPURLResponse, error == nil else {
          if let error = error {

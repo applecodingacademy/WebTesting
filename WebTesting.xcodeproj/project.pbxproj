@@ -34,6 +34,7 @@
 		5A4C437322576078008C690A /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		5A85B997225C9729002D8C2A /* FavCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavCollectionViewController.swift; sourceTree = "<group>"; };
 		5A85B999225C9777002D8C2A /* FavCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavCollectionViewCell.swift; sourceTree = "<group>"; };
+		5A85B99B225CAA3B002D8C2A /* ComicModel v2 (con Favoritos).xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "ComicModel v2 (con Favoritos).xcdatamodel"; sourceTree = "<group>"; };
 		5AAD904B225B33EA005277B0 /* ComicModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ComicModel.xcdatamodel; sourceTree = "<group>"; };
 		5AAD904D225B3C48005277B0 /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 		5AAD904F225B57AF005277B0 /* Tools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tools.swift; sourceTree = "<group>"; };
@@ -373,9 +374,10 @@
 		5AAD904A225B33EA005277B0 /* ComicModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				5A85B99B225CAA3B002D8C2A /* ComicModel v2 (con Favoritos).xcdatamodel */,
 				5AAD904B225B33EA005277B0 /* ComicModel.xcdatamodel */,
 			);
-			currentVersion = 5AAD904B225B33EA005277B0 /* ComicModel.xcdatamodel */;
+			currentVersion = 5A85B99B225CAA3B002D8C2A /* ComicModel v2 (con Favoritos).xcdatamodel */;
 			path = ComicModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

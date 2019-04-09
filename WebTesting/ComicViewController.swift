@@ -26,9 +26,18 @@ class ComicViewController: UITableViewController, UISearchResultsUpdating {
    
    let searchController = UISearchController(searchResultsController: nil)
    
+   var refresco = false
+   
+   lazy var refresh:UIRefreshControl = {
+      let refresh = UIRefreshControl()
+      refresh.addTarget(self, action: #selector(refrescoTotal), for: UIControl.Event.valueChanged)
+      return refresh
+   }()
+   
    override func viewDidLoad() {
       super.viewDidLoad()
       conexionMarvel()
+      refreshControl = refresh
       
       self.clearsSelectionOnViewWillAppear = false
       self.navigationItem.leftBarButtonItem = self.editButtonItem
@@ -53,6 +62,10 @@ class ComicViewController: UITableViewController, UISearchResultsUpdating {
       
       NotificationCenter.default.addObserver(forName: NSNotification.Name("OKCARGA"), object: nil, queue: OperationQueue.main) { [weak self] _ in
          self?.reloadTableData()
+         if let resf = self?.refresco, resf {
+            self?.refresco = false
+            self?.refresh.endRefreshing()
+         }
          guard let blur = self?.tabBarController?.view.viewWithTag(200) as? UIVisualEffectView, let activity = self?.tabBarController?.view.viewWithTag(201) as? UIActivityIndicatorView else {
             return
          }
@@ -60,6 +73,11 @@ class ComicViewController: UITableViewController, UISearchResultsUpdating {
          activity.stopAnimating()
          activity.removeFromSuperview()
       }
+   }
+   
+   @objc func refrescoTotal() {
+      refresco = true
+      conexionMarvel()
    }
    
    func newFetchedRC() {
@@ -114,6 +132,24 @@ class ComicViewController: UITableViewController, UISearchResultsUpdating {
          }
       }
       return cell
+   }
+   
+   override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+      let dato = comicResult.object(at: indexPath)
+      let action = UIContextualAction(style: .normal, title: "Favorito") {
+         action, view, handler in
+         dato.favorito.toggle()
+         saveContext()
+         handler(true)
+      }
+      action.image = UIImage(named: "heart")
+      if !dato.favorito {
+         action.backgroundColor = .green
+      } else {
+         action.backgroundColor = .red
+      }
+      let configuration = UISwipeActionsConfiguration(actions: [action])
+      return configuration
    }
    
    @IBAction func ordenar(_ sender: UIBarButtonItem) {
