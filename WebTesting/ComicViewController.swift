@@ -9,42 +9,51 @@
 import UIKit
 import CoreData
 
-class ComicViewController: UITableViewController {
-   
+enum Ordenacion {
+   case ascendente, descendente, ninguno
+}
+
+class ComicViewController: UITableViewController, UISearchResultsUpdating {
+
    var predicate:NSPredicate?
-   var sortedResult:[NSSortDescriptor] = []
+   var sorted:NSSortDescriptor?
    
    lazy var comicResult:NSFetchedResultsController<Comics> = {
       let fetchComic:NSFetchRequest<Comics> = Comics.fetchRequest()
-      var orden = [NSSortDescriptor(key: #keyPath(Comics.id), ascending: true)]
-      orden.append(contentsOf: sortedResult)
-      fetchComic.sortDescriptors = orden
-      fetchComic.predicate = predicate
+      fetchComic.sortDescriptors = [NSSortDescriptor(key: #keyPath(Comics.id), ascending: true)]
       return NSFetchedResultsController(fetchRequest: fetchComic, managedObjectContext: ctx, sectionNameKeyPath: nil, cacheName: nil)
    }()
+   
+   let searchController = UISearchController(searchResultsController: nil)
    
    override func viewDidLoad() {
       super.viewDidLoad()
       conexionMarvel()
       
       self.clearsSelectionOnViewWillAppear = false
-      self.navigationItem.rightBarButtonItem = self.editButtonItem
+      self.navigationItem.leftBarButtonItem = self.editButtonItem
+      
+      searchController.obscuresBackgroundDuringPresentation = false
+      searchController.searchBar.placeholder = "Introduzca parte del título para filtrar"
+      navigationItem.searchController = searchController
+      searchController.searchResultsUpdater = self
+      definesPresentationContext = true
       
       let blurEffect = UIBlurEffect(style: .dark)
       let blurredEffectView = UIVisualEffectView(effect: blurEffect)
       blurredEffectView.frame = navigationController?.view.frame ?? CGRect.zero
       blurredEffectView.tag = 200
-      navigationController?.view.addSubview(blurredEffectView)
+      tabBarController?.view.addSubview(blurredEffectView)
       
       let activity = UIActivityIndicatorView(style: .whiteLarge)
       activity.frame = navigationController?.view.frame ?? CGRect.zero
       activity.tag = 201
       activity.startAnimating()
-      navigationController?.view.addSubview(activity)
+      tabBarController?.view.addSubview(activity)
       
       NotificationCenter.default.addObserver(forName: NSNotification.Name("OKCARGA"), object: nil, queue: OperationQueue.main) { [weak self] _ in
          self?.reloadTableData()
-         guard let blur = self?.navigationController?.view.viewWithTag(200) as? UIVisualEffectView, let activity = self?.navigationController?.view.viewWithTag(201) as? UIActivityIndicatorView else {
+         guard let blur = self?.tabBarController?.view.viewWithTag(200) as? UIVisualEffectView, let activity = self?.tabBarController?.view.viewWithTag(201) as? UIActivityIndicatorView else {
             return
          }
          blur.removeFromSuperview()
@@ -53,13 +62,24 @@ class ComicViewController: UITableViewController {
       }
    }
    
-   func reloadTableData() {
-      do {
-         try comicResult.performFetch()
-      } catch {
-         print("Error en la consulta")
+   func newFetchedRC() {
+      if let nuevoOrden = sorted {
+         comicResult.fetchRequest.sortDescriptors =  [nuevoOrden]
+      } else {
+         comicResult.fetchRequest.sortDescriptors =  [NSSortDescriptor(key: #keyPath(Comics.id), ascending: true)]
       }
-      tableView.reloadData()
+      comicResult.fetchRequest.predicate = predicate
+   }
+   
+   func reloadTableData() {
+      DispatchQueue.main.async { [weak self] in
+         do {
+            try self?.comicResult.performFetch()
+         } catch {
+            print("Error en la consulta")
+         }
+         self?.tableView.reloadData()
+      }
    }
    
    // MARK: - Table view data source
@@ -77,7 +97,7 @@ class ComicViewController: UITableViewController {
       
       let datosComic = comicResult.object(at: indexPath)
       cell.titulo.text = datosComic.title
-      cell.descripcion.text = datosComic.comicDesc ?? "No hay descripción"
+      cell.descripcion.text = datosComic.comicDesc?.htmlString ?? "No hay descripción"
       if let imagen = datosComic.thumbnailIMG {
          cell.portada.image = UIImage(data: imagen)
       } else {
@@ -96,7 +116,48 @@ class ComicViewController: UITableViewController {
       return cell
    }
    
+   @IBAction func ordenar(_ sender: UIBarButtonItem) {
+      let alert = UIAlertController(title: "Ordenar", message: "Elija el orden de los datos", preferredStyle: .actionSheet)
+      let accion1 = UIAlertAction(title: "Ascendente", style: .default) { [weak self] _ in
+         self?.realizarOrden(tipo: .ascendente)
+      }
+      let accion2 = UIAlertAction(title: "Descendente", style: .default) { [weak self] _ in
+         self?.realizarOrden(tipo: .descendente)
+      }
+      let accion3 = UIAlertAction(title: "Ninguno", style: .default) { [weak self] _ in
+         self?.realizarOrden(tipo: .ninguno)
+      }
+      alert.addAction(accion1)
+      alert.addAction(accion2)
+      alert.addAction(accion3)
+      present(alert, animated: true, completion: nil)
+   }
    
+   func realizarOrden(tipo:Ordenacion) {
+      switch tipo {
+      case .ascendente:
+         sorted = NSSortDescriptor(key: #keyPath(Comics.title), ascending: true)
+      case .descendente:
+         sorted = NSSortDescriptor(key: #keyPath(Comics.title), ascending: false)
+      case .ninguno:
+         sorted = nil
+      }
+      newFetchedRC()
+      reloadTableData()
+   }
+   
+   func updateSearchResults(for searchController: UISearchController) {
+      guard let texto = searchController.searchBar.text else {
+         return
+      }
+      if texto.isEmpty {
+         comicResult.fetchRequest.predicate = nil
+      } else {
+         comicResult.fetchRequest.predicate = NSPredicate(format: "title CONTAINS[c] %@", texto)
+      }
+      reloadTableData()
+   }
+
    /*
     // Override to support conditional editing of the table view.
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {

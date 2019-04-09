@@ -106,7 +106,10 @@ func conexionMarvel() {
    let queryts = URLQueryItem(name: "ts", value: ts)
    let queryApiKey = URLQueryItem(name: "apikey", value: publicKey)
    let queryHash = URLQueryItem(name: "hash", value: hash)
-   url.queryItems = [queryts, queryApiKey, queryHash]
+   let limit = URLQueryItem(name: "limit", value: "100")
+   let format = URLQueryItem(name: "format", value: "hardcover")
+   let order = URLQueryItem(name: "orderBy", value: "onsaleDate")
+   url.queryItems = [limit, format, order, queryts, queryApiKey, queryHash]
    let urlFinal = url.url!.appendingPathComponent("comics")
    
    let session = URLSession.shared
